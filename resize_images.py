@@ -14,27 +14,27 @@ from tqdm.dask import TqdmCallback
 from common import read_toml
 
 
-def verify_image(src):
-    if not isfile(src):
-        return src
+# def verify_image(src):
+#     if not isfile(src):
+#         return src
 
 
-def center_crop(image):
-    w, h = image.size
-    if w != h:
-        if w < h:
-            offset = (h - w) // 2
-            image = image.crop((0, offset+w, w, offset))
-        else:
-            offset = (w - h) // 2
-            image = image.crop((offset, h, offset+h, 0))
-    return image
+# def center_crop(image):
+#     w, h = image.size
+#     if w != h:
+#         if w < h:
+#             offset = (h - w) // 2
+#             image = image.crop((0, offset+w, w, offset))
+#         else:
+#             offset = (w - h) // 2
+#             image = image.crop((offset, h, offset+h, 0))
+#     return image
 
 
-def resize_image(src, dst, size):
-    image = ski.io.imread(src)
-    image = center_crop(image)
-    image = resize()
+# def resize_image(src, dst, size):
+#     image = ski.io.imread(src)
+#     image = center_crop(image)
+#     image = resize()
 
 
 # def center_crop(image):
@@ -49,7 +49,8 @@ def resize_image(src, dst, size):
 #     return image
 
 
-# def resize_image(src, dst, size):
+def resize_image(src, dst, size):
+    pass
 #     image = ski.io.imread(src)
 #     image = center_crop(image)
 #     image = resize()
