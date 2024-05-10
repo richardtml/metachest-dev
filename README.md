@@ -6,36 +6,42 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
 
 ## Datasets Setup
 
-1. Create and activate the enviroment.
-```bash
-conda env create -f env.yml
-conda activate metachest
-```
+1. Download the datasets following the instructions on their websites. We strongly recommend the use of one directory per dataset. The following files are needed.
 
-2. Specify in the `config.toml` file a download directory for each one of the datasets, we recommend the use of one directory per dataset. Also create and specify a directory for MetaChest.
+    * [ChestX-ray14](https://nihcc.app.box.com/v/ChestXray-NIHCC/folder/36938765345). Download `Data_Entry_2017_v2020.csv` and `batch_download_zips.py`, then run:
+        ```bash
+        cd {chexpert_dir}
+        python batch_download_zips.py
+        ```
+        Extract all `images_*.tar.gz` files.
 
-3. Download the datasets following the instructions in their correspoding websites.
+    * [CheXpert](https://stanfordmlgroup.github.io/competitions/chexpert/). The complete dataset, we recommend using `azcopy`.
+        ```bash
+        azcopy cp {provided_url} {chexpert_dir} --recursive
+        ```
+    * [MIMIC](https://physionet.org/content/mimic-cxr-jpg/2.0.0/). The complete dataset.
 
-    * [ChestX-ray14](https://nihcc.app.box.com/v/ChestXray-NIHCC/folder/36938765345).
+    * [PadChest](https://bimcv.cipf.es/bimcv-projects/padchest/). The complete dataset, we recommend using `rclone`.
+        ```bash
+        rclone -vP copy {provided_url} {padchest_dir}
+        ```
 
-    * [CheXpert](https://stanfordmlgroup.github.io/competitions/chexpert/). The use of `azcopy` is recommended:
+    * MetaChest. Just create an empy dataset for the dataset.
+
+2. Specify the dataset directories in the `config.toml` file.
+
+3. Create and activate the enviroment.
     ```bash
-    azcopy cp {provided_url} {chexpert_dir} --recursive
-    ```
-
-    * [MIMIC](https://physionet.org/content/mimic-cxr-jpg/2.0.0/).
-
-    * [PadChest](). The use of `rclone` is recommended:
-    ```bash
-    rclone -vP copy {provided_url} {padchest_dir}
+    conda env create -f env.yml
+    conda activate metachest
     ```
 
 4. Extract the datasets.
 
 5. Run the following to generate the final `metachest.csv` dataset file:
-```bash
-bash generate_metachest.sh
-```
+    ```bash
+    bash generate_metachest.sh
+    ```
 
 
 ## Resizing images
