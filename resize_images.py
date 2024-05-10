@@ -1,11 +1,10 @@
 """ resize.py """
 
 from os import makedirs
-from os.path import isdir, join, isfile
+from os.path import isdir, isfile, dirname, join
 from pprint import pprint
 
 import pandas as pd
-# import skimage as ski
 from dask import delayed, compute
 from PIL import Image
 from skimage.transform import resize
@@ -14,79 +13,69 @@ from tqdm.dask import TqdmCallback
 from common import read_toml
 
 
-# def verify_image(src):
-#     if not isfile(src):
-#         return src
+def verify_image(src):
+    if not isfile(src):
+        return src
 
 
-# def center_crop(image):
-#     w, h = image.size
-#     if w != h:
-#         if w < h:
-#             offset = (h - w) // 2
-#             image = image.crop((0, offset+w, w, offset))
-#         else:
-#             offset = (w - h) // 2
-#             image = image.crop((offset, h, offset+h, 0))
-#     return image
+def center_crop(image):
+    w, h = image.size
+
+    if w != h:
+        if w < h:
+            offset = (h - w) // 2
+            # left, upper, right, lower
+            image = image.crop((0, offset, w, offset+w))
+        else:
+            offset = (w - h) // 2
+            # left, upper, right, lower
+            image = image.crop((offset, 0, offset+h, h))
+    return image
 
 
-# def resize_image(src, dst, size):
-#     image = ski.io.imread(src)
-#     image = center_crop(image)
-#     image = resize()
-
-
-# def center_crop(image):
-#     h, w = image.shape
-#     if h != w:
-#         if h < w:
-#             offset = (w - h) // 2
-#             image = image[:, offset:h+offset]
-#         else:
-#             offset = (h - w) // 2
-#             image = image[offset:w+offset, :]
-#     return image
-
-
-def resize_image(src, dst, size):
-    pass
-#     image = ski.io.imread(src)
-#     image = center_crop(image)
-#     image = resize()
-
+def crop_resize_image(src, dst, size):
+    try:
+        image = Image.open(src)
+        image = image.convert('L')
+        image = center_crop(image)
+        image = image.resize((size, size), Image.LANCZOS)
+        makedirs(dirname(dst), exist_ok=True)
+        image.save(dst)
+    except BaseException as be:
+        print(be)
+        return src
 
 
 def resize_dataset(size=384):
 
     config = read_toml('config.toml')
-    images_dir = join(config['metachest'], f'images-{size}')
+    images_dir = join(config['metachest_dir'], f'images-{size}')
     if isdir(images_dir):
         print(f'Images dir already exists: {images_dir}')
         return
 
-    # makedirs(images_dir)
+    makedirs(images_dir)
     dst_dir = {}
-    for ds in {'chex', 'mimic', 'nih', 'padchest'}:
+    for ds in {'chestxray14', 'chexpert', 'mimic', 'padchest'}:
         dst_dir[ds] = join(images_dir, ds)
-        # makedirs(dst_dir[ds])
+        makedirs(dst_dir[ds])
 
     src_dir = {
-        'chex': join(config['chex'], 'CheXpert-v1.0'),
-        'mimic': join(config['mimic'], 'images'),
-        'nih': join(config['nih'], 'images'),
-        'padchest': join(config['padchest'], 'images')
+        'chestxray14': join(config['chestxray14_dir'], 'images'),
+        'chexpert': join(config['chexpert_dir'], 'CheXpert-v1.0'),
+        'mimic': join(config['mimic_dir'], 'images'),
+        'padchest': join(config['padchest_dir'], 'images')
     }
 
     src_fmt = {
-        'chex': 'jpg',
+        'chestxray14': 'png',
+        'chexpert': 'jpg',
         'mimic': 'jpg',
-        'nih': 'png',
         'padchest': 'png'
     }
 
     df = pd.read_csv('metachest.csv')
-    df = df[:100]
+    # df = df.sample(10000)
 
     src_paths, dst_paths = [], []
     for row in df.itertuples():
@@ -110,9 +99,14 @@ def resize_dataset(size=384):
     print('Resizing images:')
     delayeds = []
     for src_path, dst_path in zip(src_paths, dst_paths):
-        delayeds.append(delayed(resize_image)(src_path, dst_path, size))
+        delayeds.append(delayed(crop_resize_image)(src_path, dst_path, size))
     with TqdmCallback():
-        results = compute(delayeds)
+        results = compute(delayeds)[0]
+    results = [r for r in results if r]
+    if results:
+        print('There were errors processing the following images:')
+        pprint(results)
+        return
 
 
 def main():
