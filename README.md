@@ -19,6 +19,7 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
         ```bash
         azcopy cp {provided_url} {chexpert_dir} --recursive
         ```
+
     * [MIMIC](https://physionet.org/content/mimic-cxr-jpg/2.0.0/). The complete dataset.
 
     * [PadChest](https://bimcv.cipf.es/bimcv-projects/padchest/). The complete dataset, we recommend using `rclone`.
@@ -38,7 +39,7 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
 
 4. Extract the datasets.
 
-5. Run the following to generate the final `metachest.csv` dataset file:
+5. Generate the final `metachest.csv` dataset file:
     ```bash
     bash generate_metachest.sh
     ```
