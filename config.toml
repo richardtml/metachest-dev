@@ -1,0 +1,6 @@
+# One directory per dataset is recommended
+chestxray14_dir = ""
+chexpert_dir = ""
+metachest_dir = ""
+mimic_dir = ""
+padchest_dir = ""
