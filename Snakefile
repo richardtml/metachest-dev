@@ -103,7 +103,5 @@ rule padchest:
         config['padchest_dir']
     output:
         join(metachest_dir, 'padchest.csv')
-    # shell:
-    #     f"{run_nb} padchest.ipynb"
-    notebook:
-        'padchest.ipynb'
+    shell:
+        f"{run_nb} padchest.ipynb"
