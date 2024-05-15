@@ -1,6 +1,6 @@
 # One directory per dataset is recommended
-chestxray14_dir = ""
-chexpert_dir = ""
-metachest_dir = ""
-mimic_dir = ""
-padchest_dir = ""
+chestxray14_dir = "/mnt/bere/datasets/chestxray14"
+chexpert_dir = "/mnt/bere/datasets/chexpert"
+mimic_dir = "/mnt/bere/datasets/mimic"
+padchest_dir = "/mnt/bere/datasets/padchest"
+metachest_dir = "/data/datasets/metachest"

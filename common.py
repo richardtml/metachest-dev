@@ -1,8 +1,9 @@
 
+import sys
 import tomllib
 
+import fire
 import matplotlib.pyplot as plt
-
 import tomli_w
 
 
@@ -119,6 +120,5 @@ def setup_mpl():
         'text.latex.preamble': r'\usepackage{cmbright}',
         'text.usetex': True,
         'font.family': 'serif',
-        # 'font.serif': ['Nimbus Roman No9 L'],
         'font.size': 12,
     })
