@@ -6,7 +6,7 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
 
 ## Datasets Setup
 
-1. Download the datasets following the instructions on their websites. We strongly recommend the use of one directory per dataset. The following files are needed.
+1. Download and extract the datasets following the instructions on their websites. We strongly recommend the use of one directory per dataset. The following files are needed.
 
     * [ChestX-ray14](https://nihcc.app.box.com/v/ChestXray-NIHCC/folder/36938765345). Download `Data_Entry_2017_v2020.csv` and `batch_download_zips.py`, then run:
         ```bash
@@ -27,7 +27,7 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
         rclone -vP copy {provided_url} {padchest_dir}
         ```
 
-    * MetaChest. Just create an empy dataset for the dataset.
+    * MetaChest. Create an directory where all files will be stored.
 
 2. Specify the dataset directories in the `config.toml` file.
 
@@ -37,11 +37,9 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
     conda activate metachest
     ```
 
-4. Extract the datasets.
-
-5. Generate the final `metachest.csv` dataset file:
+4. Generate the final `metachest.csv` dataset file:
     ```bash
-    bash generate_metachest.sh
+    snakemake -c1
     ```
 
 
