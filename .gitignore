@@ -178,8 +178,8 @@ poetry.toml
 # ruff
 .ruff_cache/
 
-# vscode
 .vscode/
+.snakemake/
 
 # project
 /config.toml
