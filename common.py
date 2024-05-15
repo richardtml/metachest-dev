@@ -1,9 +1,6 @@
 
-import sys
 import tomllib
 
-import fire
-import matplotlib.pyplot as plt
 import tomli_w
 
 
@@ -114,11 +111,3 @@ def read_toml(path):
 def save_toml(path, data):
     with open(path, mode='wb') as f:
         tomli_w.dump(data, f)
-
-def setup_mpl():
-    plt.rcParams.update({
-        'text.latex.preamble': r'\usepackage{cmbright}',
-        'text.usetex': True,
-        'font.family': 'serif',
-        'font.size': 12,
-    })
