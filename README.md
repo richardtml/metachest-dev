@@ -45,10 +45,10 @@ MetaChest is publicly available dataset of chest radiographs and patologies gene
 
 ## Resizing images
 
-To resize images from all datasets to a new size (e.g. 384) run:
+To resize images from all datasets:
 
-```bash
-python resize_images.py 384
-```
+    ```bash
+    snakemake -R images -c1
+    ```
 
 The images will be stored on the `metachest_dir` directory.

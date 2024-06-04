@@ -74,7 +74,7 @@ def resize_dataset(size=384):
         'padchest': 'png'
     }
 
-    df = pd.read_csv('metachest.csv')
+    df = pd.read_csv(join(config['metachest_dir'], 'metachest.csv'))
     # df = df.sample(10000)
 
     src_paths, dst_paths = [], []
@@ -109,8 +109,6 @@ def resize_dataset(size=384):
         return
 
 
-def main():
-    resize_dataset()
-
 if __name__ == '__main__':
-    main()
+    import fire
+    fire.Fire(resize_dataset)

@@ -105,3 +105,14 @@ rule padchest:
         join(metachest_dir, 'padchest.csv')
     shell:
         f"{run_nb} padchest.ipynb"
+
+rule images:
+    input:
+        [config['chestxray14_dir'], config['chexpert_dir'],
+         config['mimic_dir'], config['padchest_dir']]
+    output:
+        [directory(join(metachest_dir, f'images-{res}'))
+         for res in [224, 384, 512, 768, 1024]]
+    run:
+        for res in [224, 384, 512, 768, 1024]:
+            shell(f"python resize_images.py {res}")
