@@ -4,10 +4,10 @@ from os import makedirs
 from os.path import isdir, isfile, dirname, join
 from pprint import pprint
 
+import numpy as np
 import pandas as pd
 from dask import delayed, compute
 from PIL import Image
-from skimage.transform import resize
 from tqdm.dask import TqdmCallback
 
 from common import read_toml
@@ -16,6 +16,14 @@ from common import read_toml
 def verify_image(src):
     if not isfile(src):
         return src
+
+
+def convert(image):
+    if image.mode == 'I;16':
+        array = np.uint8(np.array(image) / 256)
+        return Image.fromarray(array)
+    else:
+        return image.convert('L')
 
 
 def center_crop(image):
@@ -36,7 +44,7 @@ def center_crop(image):
 def crop_resize_image(src, dst, size):
     try:
         image = Image.open(src)
-        image = image.convert('L')
+        image = convert(image)
         image = center_crop(image)
         image = image.resize((size, size), Image.LANCZOS)
         makedirs(dirname(dst), exist_ok=True)
@@ -75,7 +83,7 @@ def resize_dataset(size=384):
     }
 
     df = pd.read_csv(join(config['metachest_dir'], 'metachest.csv'))
-    # df = df.sample(10000)
+    # df = df.sample(1000)
 
     src_paths, dst_paths = [], []
     for row in df.itertuples():
