@@ -56,10 +56,12 @@ def crop_resize_image(src, dst, size):
 
 def resize_dataset(size=384):
 
+    print(f'Resising dataset images to {size}')
+
     config = read_toml('config.toml')
     images_dir = join(config['metachest_dir'], f'images-{size}')
     if isdir(images_dir):
-        print(f'Images dir already exists: {images_dir}')
+        print(f'  Images dir already exists: {images_dir}')
         return
 
     makedirs(images_dir)
@@ -92,7 +94,7 @@ def resize_dataset(size=384):
         src_paths.append(src_path)
         dst_paths.append(dst_path)
 
-    print('Verifying all images are available:')
+    print(' Verifying images availability:')
     delayeds = []
     for src_path in src_paths:
         delayeds.append(delayed(verify_image)(src_path))
@@ -100,11 +102,11 @@ def resize_dataset(size=384):
         results = compute(delayeds)[0]
     results = [r for r in results if r]
     if results:
-        print('Verify the datasets, the following images were not found:')
+        print('  Verify the datasets, the following images were not found:')
         pprint(results)
         return
 
-    print('Resizing images:')
+    print('  Resizing images:')
     delayeds = []
     for src_path, dst_path in zip(src_paths, dst_paths):
         delayeds.append(delayed(crop_resize_image)(src_path, dst_path, size))
@@ -112,7 +114,7 @@ def resize_dataset(size=384):
         results = compute(delayeds)[0]
     results = [r for r in results if r]
     if results:
-        print('There were errors processing the following images:')
+        print('  There were errors processing the following images:')
         pprint(results)
         return
 
