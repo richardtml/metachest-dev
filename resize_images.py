@@ -94,7 +94,7 @@ def resize_dataset(size=384):
         src_paths.append(src_path)
         dst_paths.append(dst_path)
 
-    print(' Verifying images availability:')
+    print('  Verifying images availability:')
     delayeds = []
     for src_path in src_paths:
         delayeds.append(delayed(verify_image)(src_path))
