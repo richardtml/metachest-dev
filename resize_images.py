@@ -56,7 +56,7 @@ def crop_resize_image(src, dst, size):
 
 def resize_dataset(size=384):
 
-    print(f'Resising dataset images to {size}')
+    print(f'Resizing dataset images to {size}')
 
     config = read_toml('config.toml')
     images_dir = join(config['metachest_dir'], f'images-{size}')
