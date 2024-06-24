@@ -109,7 +109,8 @@ rule padchest:
 rule images:
     input:
         [join(metachest_dir, f'images-{res}')
-         for res in [224, 336, 384, 512, 768, 1024]]
+         for res in [224, 384, 512, 768, 1024]]
+        #  for res in [224, 336, 384, 448, 512, 768, 1024]]
 
 rule images_224:
     input:
@@ -120,14 +121,14 @@ rule images_224:
     shell:
         f"python resize_images.py {224}"
 
-rule images_336:
-    input:
-        [config['chestxray14_dir'], config['chexpert_dir'],
-         config['mimic_dir'], config['padchest_dir']]
-    output:
-        directory(join(metachest_dir, f'images-{336}'))
-    shell:
-        f"python resize_images.py {336}"
+# rule images_336:
+#     input:
+#         [config['chestxray14_dir'], config['chexpert_dir'],
+#          config['mimic_dir'], config['padchest_dir']]
+#     output:
+#         directory(join(metachest_dir, f'images-{336}'))
+#     shell:
+#         f"python resize_images.py {336}"
 
 rule images_384:
     input:
@@ -137,6 +138,15 @@ rule images_384:
         directory(join(metachest_dir, f'images-{384}'))
     shell:
         f"python resize_images.py {384}"
+
+# rule images_448:
+#     input:
+#         [config['chestxray14_dir'], config['chexpert_dir'],
+#          config['mimic_dir'], config['padchest_dir']]
+#     output:
+#         directory(join(metachest_dir, f'images-{448}'))
+#     shell:
+#         f"python resize_images.py {448}"
 
 rule images_512:
     input:
