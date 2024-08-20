@@ -1,9 +1,9 @@
-# One directory per dataset is recommended
+# Datasets: one dir per dataset is recommended
 chestxray14_dir = ""
 chexpert_dir = ""
 mimic_dir = ""
 padchest_dir = ""
-metachest_dir = "/home/richardt/Projets/bere/datasets/metachest"
+metachest_dir = ""
 
 # MTL Classes Setup
 mtrn = [
