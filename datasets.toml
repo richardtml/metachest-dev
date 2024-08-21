@@ -1,6 +1,0 @@
-# Datasets: one dir per dataset is recommended
-chestxray14_dir = ""
-chexpert_dir = ""
-mimic_dir = ""
-padchest_dir = ""
-metachest_dir = ""
