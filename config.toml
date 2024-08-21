@@ -5,7 +5,7 @@ mimic_dir = ""
 padchest_dir = ""
 metachest_dir = ""
 
-# MTL Classes Setup
+# MTL Classes
 mtrn = [
     "effusion",
     "lung_opacity",
