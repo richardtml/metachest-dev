@@ -60,15 +60,12 @@ def resize_dataset(size=384):
 
     config = read_toml('config.toml')
     images_dir = join(config['metachest_dir'], f'images-{size}')
-    if isdir(images_dir):
-        print(f'  Images dir already exists: {images_dir}')
-        return
 
-    makedirs(images_dir)
+    makedirs(images_dir, exist_ok=True)
     dst_dir = {}
     for ds in {'chestxray14', 'chexpert', 'mimic', 'padchest'}:
         dst_dir[ds] = join(images_dir, ds)
-        makedirs(dst_dir[ds])
+        makedirs(dst_dir[ds], exist_ok=True)
 
     src_dir = {
         'chestxray14': join(config['chestxray14_dir'], 'images'),
@@ -84,15 +81,22 @@ def resize_dataset(size=384):
         'padchest': 'png'
     }
 
+
     df = pd.read_csv(join(config['metachest_dir'], 'metachest.csv'))
+    nf_df = pd.read_csv(join(config['metachest_dir'], 'metachest_nf.csv'))
+    df = pd.concat([
+        df[['dataset', 'name']],
+        nf_df[['dataset', 'name']]
+    ])
     # df = df.sample(1000)
 
     src_paths, dst_paths = [], []
     for row in df.itertuples():
         src_path = join(src_dir[row.dataset], f'{row.name}.{src_fmt[row.dataset]}')
         dst_path = join(dst_dir[row.dataset], f'{row.name}.jpg')
-        src_paths.append(src_path)
-        dst_paths.append(dst_path)
+        if not isfile(dst_path):
+            src_paths.append(src_path)
+            dst_paths.append(dst_path)
 
     print('  Verifying images availability:')
     delayeds = []
