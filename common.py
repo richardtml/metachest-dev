@@ -6,6 +6,7 @@ import seaborn as sns
 import tomllib
 
 from matplotlib.ticker import EngFormatter
+from matplotlib_venn import venn3
 
 
 MIN_AGE, MAX_AGE = 10, 80
@@ -132,36 +133,74 @@ ALIASES = {
 }
 
 
-# def filter_msets(df, filter_df, mclasses):
-#     mset_exclude = {
-#         'mtrn': mclasses['mval'] + mclasses['mtst'],
-#         'mval': mclasses['mtst'],
-#         'mtst': mclasses['mval'],
-#     }
-#     for mset, classes in mset_exclude.items():
-#         exclude = df[classes].any(axis=1)
-#         filter_df.loc[exclude, mset] = 0
-#     return filter_df
+def _filter_mset(mset, mclasses, df, n_metadata_cols=5):
+    """ Filter df for the given mset:
 
+        | mset | definition     |
+        |------|----------------|
+        | mtrn | (mval ∪ mtst)' |
+        | mval | mval ∩ mtst'   |
+        | mtst | mval' ∩ mtst   |
 
-def filter_mset(mset, mclasses, df, n_metadata_cols=5):
-    mval_mtst_examples = df[mclasses['mval'] + mclasses['mtst']].any(axis=1)
+        See mtl_complete.ipynb
+    """
+    mtrn_classes = mclasses['mtrn']
+    mval_classes = mclasses['mval']
+    mtst_classes = mclasses['mtst']
+    mval_mask = df[mval_classes].any(axis=1)
+    mtst_mask = df[mtst_classes].any(axis=1)
+
     if mset == 'mtrn':
-        # keep examples with only mtrn classes
-        mtrn_only_examples = ~mval_mtst_examples
-        df = df[mtrn_only_examples]
-        classes = mclasses['mtrn']
+        # (mval ∪ mtst)'
+        mset_mask = ~(mval_mask | mtst_mask)
+        mset_classes = mtrn_classes
+    elif mset == 'mval':
+        # mval ∩ mtst'
+        mset_mask = mval_mask & ~mtst_mask
+        mset_classes = mtrn_classes + mval_classes
     else:
-        # discarding examples with only mtrn classes
-        df = df[mval_mtst_examples]
-        # keep examples with mtrn+mset clases
-        mtrn_mset_classes = mclasses['mtrn'] + mclasses[mset]
-        mtrn_mset_examples = df[mtrn_mset_classes].any(axis=1)
-        df = df[mtrn_mset_examples]
-        classes = mtrn_mset_classes
-    cols = list(df.columns[:n_metadata_cols]) + classes
+        # mval' ∩ mtst
+        mset_mask = ~mval_mask & mtst_mask
+        mset_classes = mtrn_classes + mtst_classes
+
+    df = df[mset_mask].copy()
+    cols = list(df.columns[:n_metadata_cols]) + mset_classes
     df = df[cols]
     return df
+
+
+def plot_venn(mset):
+    """ Venn diagram representation of _filter_mset()."""
+
+    plt.figure(figsize=(2, 2))
+    diagram = venn3((1, 1, 1, 1, 1, 1, 1),
+                    set_labels=('mval\nclasses',
+                                'mtst\nclasses',
+                                'mtrn\nclasses'))
+    for sid in ("100", "010", "110", "001", "101", "011", "111"):
+        diagram.get_label_by_id(sid).set_text('')
+        diagram.get_patch_by_id(sid).set_color('white')
+
+    if mset == 'mtrn':
+        color = '#1f77b4'
+        diagram.get_patch_by_id('001').set_color(color)
+    elif mset == 'mval':
+        color = '#9467bd'
+        diagram.get_patch_by_id('100').set_color(color)
+        diagram.get_patch_by_id('101').set_color(color)
+    else:
+        color = '#e377c2'
+        diagram.get_patch_by_id('010').set_color(color)
+        diagram.get_patch_by_id('011').set_color(color)
+
+    for sid in ("100", "010",  "001", "111"):
+        diagram.get_patch_by_id(sid).set_edgecolor('black')
+
+    for i in range(3):
+        diagram.set_labels[i].set_fontsize('small')
+
+    plt.title(f'{mset}\ndataset')
+    plt.show()
 
 
 def plot_coocc(dataset, mset, df):
@@ -198,22 +237,6 @@ def plot_coocc(dataset, mset, df):
     plt.tight_layout()
 
 
-
-# def read_mclasses(path='mtl_classes.toml'):
-#     mclasses = read_toml(path)
-#     return {
-#         'mtrn': mclasses['mtrn'],
-#         'mval': mclasses['mval'],
-#         'mtst': mclasses['mtst']
-#     }
-
-
 def read_toml(path):
     with open(path, 'rb') as f:
         return tomllib.load(f)
-
-
-
-# def save_toml(path, data):
-#     with open(path, mode='wb') as f:
-#         tomli_w.dump(data, f)
