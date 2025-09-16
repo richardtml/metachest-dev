@@ -1,7 +1,7 @@
 """ resize.py """
 
 from os import makedirs
-from os.path import isdir, isfile, dirname, join
+from os.path import isfile, dirname, join
 from pprint import pprint
 
 import numpy as np
