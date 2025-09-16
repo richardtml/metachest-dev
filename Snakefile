@@ -45,7 +45,7 @@ rule mtl_subpop:
     output:
         mtl_subpop_files
     shell:
-        f"{run_nb} mtl_subpop.ipynb"
+        f"{run_nb} notebooks/mtl_subpop.ipynb"
 
 rule mtl_subds:
     input:
@@ -53,7 +53,7 @@ rule mtl_subds:
     output:
         mtl_subds_files
     shell:
-        f"{run_nb} mtl_subds.ipynb"
+        f"{run_nb} notebooks/mtl_subds.ipynb"
 
 rule mtl_complete:
     input:
@@ -61,7 +61,7 @@ rule mtl_complete:
     output:
         mtl_complete_files
     shell:
-        f"{run_nb} mtl_complete.ipynb"
+        f"{run_nb} notebooks/mtl_complete.ipynb"
 
 rule metachest:
     input:
@@ -72,7 +72,7 @@ rule metachest:
     output:
         join(metachest_dir, 'metachest.csv')
     shell:
-        f"{run_nb} metachest.ipynb"
+        f"{run_nb} notebooks/metachest.ipynb"
 
 rule chestxray14:
     input:
@@ -80,7 +80,7 @@ rule chestxray14:
     output:
         join(metachest_dir, 'chestxray14.csv')
     shell:
-        f"{run_nb} chestxray14.ipynb"
+        f"{run_nb} notebooks/chestxray14.ipynb"
 
 rule chexpert:
     input:
@@ -88,7 +88,7 @@ rule chexpert:
     output:
         join(metachest_dir, 'chexpert.csv')
     shell:
-        f"{run_nb} chexpert.ipynb"
+        f"{run_nb} notebooks/chexpert.ipynb"
 
 rule mimic:
     input:
@@ -96,7 +96,7 @@ rule mimic:
     output:
         join(metachest_dir, 'mimic.csv')
     shell:
-        f"{run_nb} mimic.ipynb"
+        f"{run_nb} notebooks/mimic.ipynb"
 
 rule padchest:
     input:
@@ -104,13 +104,12 @@ rule padchest:
     output:
         join(metachest_dir, 'padchest.csv')
     shell:
-        f"{run_nb} padchest.ipynb"
+        f"{run_nb} notebooks/padchest.ipynb"
 
 rule images:
     input:
         [join(metachest_dir, f'images-{res}')
          for res in [224, 384, 512, 768, 1024]]
-        #  for res in [224, 336, 384, 448, 512, 768, 1024]]
 
 rule images_224:
     input:
@@ -121,15 +120,6 @@ rule images_224:
     shell:
         f"python resize_images.py {224}"
 
-# rule images_336:
-#     input:
-#         [config['chestxray14_dir'], config['chexpert_dir'],
-#          config['mimic_dir'], config['padchest_dir']]
-#     output:
-#         directory(join(metachest_dir, f'images-{336}'))
-#     shell:
-#         f"python resize_images.py {336}"
-
 rule images_384:
     input:
         [config['chestxray14_dir'], config['chexpert_dir'],
@@ -138,15 +128,6 @@ rule images_384:
         directory(join(metachest_dir, f'images-{384}'))
     shell:
         f"python resize_images.py {384}"
-
-# rule images_448:
-#     input:
-#         [config['chestxray14_dir'], config['chexpert_dir'],
-#          config['mimic_dir'], config['padchest_dir']]
-#     output:
-#         directory(join(metachest_dir, f'images-{448}'))
-#     shell:
-#         f"python resize_images.py {448}"
 
 rule images_512:
     input:
