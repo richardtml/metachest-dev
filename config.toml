@@ -1,0 +1,29 @@
+# Datasets, separate directories is strongly recommended
+chestxray14_dir = ""
+chexpert_dir = ""
+mimic_dir = ""
+padchest_dir = ""
+metachest_dir = ""
+
+# Meta-sets Classes
+mtrn = [
+    "effusion",
+    "lung_opacity",
+    "atelectasis",
+    "infiltration",
+    "nodule",
+    "mass",
+    "pleural_thickening",
+]
+mval = [
+    "emphysema",
+    "fibrosis",
+    "hernia",
+]
+mtst = [
+    "cardiomegaly",
+    "edema",
+    "pneumothorax",
+    "consolidation",
+    "pneumonia",
+]

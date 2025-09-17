@@ -182,4 +182,3 @@ poetry.toml
 .snakemake/
 
 # project
-/config.toml
