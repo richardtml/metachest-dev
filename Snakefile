@@ -31,27 +31,27 @@ rule all:
     input:
         [join(metachest_dir, 'metachest.csv')] + subpop_files + subds_files
 
-rule mtl_subpop:
+rule distro_subpop:
     input:
         join(metachest_dir, 'metachest.csv')
     output:
         subpop_files
     shell:
-        f"{run_nb} notebooks/mtl_subpop.ipynb"
+        f"{run_nb} notebooks/distro_subpop.ipynb"
 
-rule mtl_subds:
+rule distro_subds:
     input:
         join(metachest_dir, 'metachest.csv')
     output:
         subds_files
     shell:
-        f"{run_nb} notebooks/mtl_subds.ipynb"
+        f"{run_nb} notebooks/distro_subds.ipynb"
 
-rule mtl_complete:
+rule distro_complete:
     input:
         join(metachest_dir, 'metachest.csv')
     shell:
-        f"{run_nb} notebooks/mtl_complete.ipynb"
+        f"{run_nb} notebooks/distro_complete.ipynb"
 
 rule metachest:
     input:
