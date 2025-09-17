@@ -5,45 +5,37 @@ from common import read_toml
 
 config = read_toml('config.toml')
 metachest_dir = config['metachest_dir']
-mtl_dir = join(metachest_dir, 'mtl')
+distro_dir = join(metachest_dir, 'distro')
 run_nb = "jupyter nbconvert --execute --to notebook --inplace"
 
 
 def flatten(list_of_lists):
     return [item for row in list_of_lists for item in row]
 
-
-mtl_complete_files = [
-    join(mtl_dir, 'complete.csv'),
-    join(mtl_dir, 'complete.toml')
+subpop_files = [
+    join(distro_dir, f'{subpop}.csv')
+    for subpop in [
+        'age_decade2', 'age_decade3', 'age_decade4', 'age_decade5',
+        'age_decade6', 'age_decade7', 'age_decade8',
+        'sex_female', 'sex_male',
+        'view_ap', 'view_pa'
+    ]
 ]
-mtl_subpop_files = flatten([
-    [
-        join(mtl_dir, f'{subpop}.csv'),
-        join(mtl_dir, f'{subpop}.toml')
-    ]
-    for subpop in ['age_center', 'age_tails',
-                   'sex_female', 'sex_male',
-                   'view_ap', 'view_pa']
-])
-mtl_subds_files = flatten([
-    [
-        join(mtl_dir, f'ds_{dataset}.csv'),
-        join(mtl_dir, f'ds_{dataset}.toml')
-    ]
+subds_files = [
+    join(distro_dir, f'ds_{dataset}.csv')
     for dataset in ['chestxray14', 'chexpert', 'mimic', 'padchest']
-])
+]
 
 
 rule all:
     input:
-        mtl_complete_files + mtl_subpop_files + mtl_subds_files
+        [join(metachest_dir, 'metachest.csv')] + subpop_files + subds_files
 
 rule mtl_subpop:
     input:
         join(metachest_dir, 'metachest.csv')
     output:
-        mtl_subpop_files
+        subpop_files
     shell:
         f"{run_nb} notebooks/mtl_subpop.ipynb"
 
@@ -51,15 +43,13 @@ rule mtl_subds:
     input:
         join(metachest_dir, 'metachest.csv')
     output:
-        mtl_subds_files
+        subds_files
     shell:
         f"{run_nb} notebooks/mtl_subds.ipynb"
 
 rule mtl_complete:
     input:
         join(metachest_dir, 'metachest.csv')
-    output:
-        mtl_complete_files
     shell:
         f"{run_nb} notebooks/mtl_complete.ipynb"
 
@@ -70,7 +60,10 @@ rule metachest:
             for dataset in ['chestxray14', 'chexpert', 'mimic', 'padchest']
         ]
     output:
-        join(metachest_dir, 'metachest.csv')
+        [
+            join(metachest_dir, 'metachest.csv'),
+            join(metachest_dir, 'metachest_nf.csv')
+        ]
     shell:
         f"{run_nb} notebooks/metachest.ipynb"
 
@@ -78,7 +71,10 @@ rule chestxray14:
     input:
         config['chestxray14_dir']
     output:
-        join(metachest_dir, 'chestxray14.csv')
+        [
+            join(metachest_dir, 'chestxray14.csv'),
+            join(metachest_dir, 'chestxray14_nf.csv')
+        ]
     shell:
         f"{run_nb} notebooks/chestxray14.ipynb"
 
@@ -86,7 +82,10 @@ rule chexpert:
     input:
         config['chexpert_dir']
     output:
-        join(metachest_dir, 'chexpert.csv')
+        [
+            join(metachest_dir, 'chexpert.csv'),
+            join(metachest_dir, 'chexpert_nf.csv')
+        ]
     shell:
         f"{run_nb} notebooks/chexpert.ipynb"
 
@@ -94,7 +93,10 @@ rule mimic:
     input:
         config['mimic_dir']
     output:
-        join(metachest_dir, 'mimic.csv')
+        [
+            join(metachest_dir, 'mimic.csv'),
+            join(metachest_dir, 'mimic_nf.csv')
+        ]
     shell:
         f"{run_nb} notebooks/mimic.ipynb"
 
@@ -102,7 +104,10 @@ rule padchest:
     input:
         config['padchest_dir']
     output:
-        join(metachest_dir, 'padchest.csv')
+        [
+            join(metachest_dir, 'padchest.csv'),
+            join(metachest_dir, 'padchest_nf.csv')
+        ]
     shell:
         f"{run_nb} notebooks/padchest.ipynb"
 
