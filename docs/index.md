@@ -13,7 +13,7 @@ hide:
 
 ![MataChest Distribution Table](images/table.png)
 
-A detailed explanation of the collection procedure and statistics can be found in the paper [MetaChest: Generalized few-shot learning of patologies from chest X-rays](https://arxiv.org/abs/2210.07983).
+A detailed explanation of the collection procedure and statistics can be found in the paper [MetaChest: Generalized few-shot learning of patologies from chest X-rays]().
 
 
 ## Data
